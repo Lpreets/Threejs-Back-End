@@ -2,6 +2,7 @@ import express from "express";
 import * as dotenv from "dotenv";
 import OpenAI from "openai";
 import axios from "axios";
+import stream from "stream";
 
 dotenv.config();
 
@@ -39,9 +40,21 @@ router.route("/").post(async (req, res) => {
       config
     );
 
-    const image_url = aiResponse.data.data[0].url;
+    const imageUrl = aiResponse.data.data[0].url;
 
-    res.status(201).json({ photo: image_url });
+    // Fetch the image data
+    const imageResponse = await axios.get(imageUrl, {
+      responseType: 'arraybuffer'
+    });
+
+    // Set the correct content type
+    res.set('Content-Type', 'image/png');
+
+    // Convert the image data to a stream and send it
+    const imageStream = new stream.PassThrough();
+    imageStream.end(imageResponse.data);
+    imageStream.pipe(res);
+
   } catch (error) {
     console.log(error);
     res
@@ -53,4 +66,3 @@ router.route("/").post(async (req, res) => {
 });
 
 export default router;
-
