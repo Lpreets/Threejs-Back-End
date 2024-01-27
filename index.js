@@ -7,7 +7,7 @@ import dalleRoutes from "./routes/dalle.routes.js";
 dotenv.config();
 
 const corsOptions = {
-    origin: "https://lpreet-threejs.vercel.app/", 
+    origin: "https://lpreet-threejs.vercel.app", 
     optionsSuccessStatus: 200,
 };
 
